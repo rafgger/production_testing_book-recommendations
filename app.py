@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify, render_template, send_from_directory
-from simplified_recommendation_fixed import load_dataset, preprocess_data, ContentBasedRecommender
+from recommendations import load_dataset, preprocess_data, ContentBasedRecommender
 import os
 import numpy as np
 
