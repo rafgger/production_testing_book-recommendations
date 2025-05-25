@@ -88,7 +88,7 @@ nest-asyncio==1.6.0
 notebook==7.4.2
 notebook_shim==0.2.4
 numpy==2.2.6
-orjson==3.10.16
+# orjson==3.10.16
 overrides==7.7.0
 packaging==25.0
 pandas==2.2.3
