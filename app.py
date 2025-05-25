@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify, render_template, send_from_directory
 from simplified_recommendation_fixed import load_dataset, preprocess_data, ContentBasedRecommender
 import os
+import numpy as np
 
 app = Flask(__name__, 
     static_folder='static',
@@ -35,7 +36,7 @@ def book_titles():
                 return jsonify({'error': 'Book-Title column not found in dataset'}), 400
 
             titles = books_df['Book-Title'].dropna().unique().tolist()
-            cached_titles = sorted(titles)[:1000]  # Limit to 1000 titles for performance
+            cached_titles = sorted(titles)[:30000]  # Limit to 1000 titles for performance
 
         return jsonify({'titles': cached_titles})
     except Exception as e:
@@ -60,6 +61,10 @@ def recommend():
 
         # Get recommendations
         recommendations = dynamic_recommender.get_recommendations(book_title, top_n=num_recommendations)
+
+        # Convert float32 and int64 values to standard Python types for JSON serialization
+        recommendations = [{key: (float(value) if isinstance(value, np.float32) else int(value) if isinstance(value, np.int64) else value) for key, value in rec.items()} for rec in recommendations]
+
         return jsonify({'recommendations': recommendations})
     except Exception as e:
         return jsonify({'error': str(e)}), 500

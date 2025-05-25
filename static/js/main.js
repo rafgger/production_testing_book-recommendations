@@ -69,46 +69,34 @@ function displayRecommendations(recommendations) {
 }
 
 async function loadBookTitles() {
-    const select = document.getElementById('book-title');
-    select.disabled = true;
-    select.innerHTML = '<option value="">Loading book titles...</option>';
-    
+    const datalist = document.getElementById('book-titles');
+    datalist.innerHTML = '<option value="Loading book titles...">';
+
     try {
         const response = await fetch('/book-titles');
         const data = await response.json();
-        
+
         if (!response.ok) {
             throw new Error(data.error || 'Failed to load book titles');
         }
-        
+
         if (data.error) {
             throw new Error(data.error);
         }
-        
+
         if (!data.titles || !data.titles.length) {
             throw new Error('No books found in the database');
         }
-        
-        select.innerHTML = '<option value="">Select a book...</option>';
+
+        datalist.innerHTML = '';
         data.titles.forEach(title => {
             const option = document.createElement('option');
             option.value = title;
-            option.textContent = title;
-            select.appendChild(option);
+            datalist.appendChild(option);
         });
     } catch (error) {
         console.error('Error loading book titles:', error);
-        select.innerHTML = '<option value="">Error loading books</option>';
-        // Show error message in a more user-friendly way
-        const container = document.getElementById('recommendations');
-        container.innerHTML = `
-            <div class="error-message">
-                <p>Error loading book titles: ${error.message}</p>
-                <button onclick="loadBookTitles()">Try Again</button>
-            </div>
-        `;
-    } finally {
-        select.disabled = false;
+        datalist.innerHTML = '<option value="Error loading books">';
     }
 }
 

@@ -1,0 +1,12 @@
+Content-Based Recommendations for 'Lord of the Rings':
+
+1. el senor de los anillosthe lord of the rings by j r r tolkien (1985.0) - Similarity: 0.8256 
+2. el senor de los anillos el retorno del rey tolkien j r r lord of the rings 3 by j r r tolkien (2001.0) - Similarity: 0.7693 
+3. el senor de los anillos las dos torres lord of the rings paperback by j r r tolkien (2001.0) - Similarity: 0.7162 
+4. the two towers the lord of the rings part 2 by jrr tolkien (1986.0) - Similarity: 0.6782 
+5. the hobbit  the enchanting prelude to the lord of the rings by jrr tolkien (1986.0) - Similarity: 0.6782 
+6. the hobbit and the lord of the rings by jrr tolkien (1986.0) - Similarity: 0.6782 
+7. the two towers the lord of the rings book 2 by j r r tolkien (2001.0) - Similarity: 0.6390 
+8. the lord of the rings by j r r tolkien (1999.0) - Similarity: 0.6356 
+9. the fellowship of the ring being the first part of the lord of the rings the lord of the rings  by jrr tolkien pt 1 by j r r tolkien (1967.0) - Similarity: 0.6181 
+10. el seor de los anillos by j r r tolkien (1995.0) - Similarity: 0.6165 

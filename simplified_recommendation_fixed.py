@@ -32,7 +32,7 @@ def load_dataset():
     return books_df
 
 # Data Preprocessing Functions
-def preprocess_data(books_df, sample_size=10000, query_books=None):
+def preprocess_data(books_df, sample_size=300000, query_books=None):
     """Preprocess the dataset for memory-efficient recommendation algorithms"""
     print("Preprocessing data...")
     
@@ -238,7 +238,7 @@ def get_recommendations_for_queries(recommender, queries):
             results[query] = recommendations
             
             # Save recommendations to file
-            with open(f'/home/ubuntu/{query.replace(" ", "_")}_recommendations.txt', 'w') as f:
+            with open(f'./{query.replace(" ", "_")}_recommendations.txt', 'w') as f:
                 f.write(f"Content-Based Recommendations for '{query}':\n\n")
                 
                 for i, rec in enumerate(recommendations, 1):
@@ -252,62 +252,28 @@ def get_recommendations_for_queries(recommender, queries):
     return results
 
 # Main function to run the recommendation system
-def main():
+def main(selected_book):
     """Main function to run the simplified book recommendation system"""
     # Load dataset
     books_df = load_dataset()
-    
-    # Define query books
-    queries = ["Lord of the Rings", "Harry Potter", "Pride and Prejudice"]
-    
+
     # Preprocess data with sampling for memory efficiency
     sample_size = 10000  # Adjust based on available memory
-    books_df = preprocess_data(books_df, sample_size=sample_size, query_books=queries)
-    
+    books_df = preprocess_data(books_df, sample_size=sample_size, query_books=[selected_book])
+
     # Initialize and fit content-based recommender
     recommender = ContentBasedRecommender(books_df, max_features=3000)
     recommender.fit()
-    
-    # Get recommendations for query books
-    results = get_recommendations_for_queries(recommender, queries)
-    
-    # Save a summary of the approach
-    with open('/home/ubuntu/recommendation_approach_summary.md', 'w') as f:
-        f.write("# Book Recommendation System: Approach Summary\n\n")
-        
-        f.write("## Implementation Approach\n")
-        f.write("This implementation uses a content-based filtering approach to recommend books similar to a given query book. ")
-        f.write("The system analyzes book metadata (title, author, publisher) to find books with similar characteristics.\n\n")
-        
-        f.write("## Memory Efficiency Techniques\n")
-        f.write("1. **Data Sampling**: Working with a subset of the full dataset to reduce memory requirements\n")
-        f.write("2. **Batch Processing**: Computing similarities in batches to avoid loading the entire similarity matrix into memory\n")
-        f.write("3. **Feature Limitation**: Restricting the TF-IDF vectorizer to a maximum number of features\n")
-        f.write("4. **Data Type Optimization**: Using float32 instead of float64 to reduce memory usage\n")
-        f.write("5. **Garbage Collection**: Explicitly calling the garbage collector after memory-intensive operations\n\n")
-        
-        f.write("## Limitations\n")
-        f.write("1. **Limited Dataset**: Using a sample of the full dataset means some potentially relevant books may be excluded\n")
-        f.write("2. **Content-Only Approach**: This implementation relies solely on book metadata and doesn't incorporate user ratings\n")
-        f.write("3. **Cold Start Problem**: New books without established metadata would be difficult to recommend\n")
-        f.write("4. **Limited Features**: Only using title, author, and publisher may miss other important book characteristics\n\n")
-        
-        f.write("## Potential Improvements\n")
-        f.write("1. **Hybrid Approach**: Combining content-based filtering with collaborative filtering for better recommendations\n")
-        f.write("2. **Additional Features**: Incorporating book descriptions, genres, or tags for richer content analysis\n")
-        f.write("3. **Distributed Computing**: Using technologies like Spark for processing the full dataset\n")
-        f.write("4. **Advanced Algorithms**: Implementing matrix factorization or deep learning approaches for better recommendations\n")
-        f.write("5. **Evaluation Framework**: Adding quantitative evaluation metrics to measure recommendation quality\n\n")
-        
-        f.write("## Production Considerations\n")
-        f.write("For a production environment, the system would need:\n")
-        f.write("1. **Scalable Infrastructure**: Cloud-based or distributed computing resources\n")
-        f.write("2. **Incremental Updates**: Ability to update the model as new books are added\n")
-        f.write("3. **API Layer**: RESTful API for client applications to request recommendations\n")
-        f.write("4. **Caching**: Caching popular recommendations to improve response time\n")
-        f.write("5. **Monitoring**: Performance and quality monitoring systems\n")
-    
-    return recommender, results
+
+    # Get recommendations for the selected book
+    recommendations = recommender.get_recommendations(selected_book)
+
+    # Print recommendations
+    print(f"Recommendations for '{selected_book}':")
+    for i, rec in enumerate(recommendations, 1):
+        print(f"{i}. {rec['title']} by {rec['author']} ({rec['year']}) - Similarity: {rec['similarity_score']:.4f}")
+
+    return recommendations
 
 if __name__ == "__main__":
     main()
