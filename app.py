@@ -48,12 +48,18 @@ def recommend():
     data = request.json
     book_title = data.get('book_title', '')
     num_recommendations = int(data.get('num_recommendations', 5))
-    
+
     if not book_title:
         return jsonify({'error': 'Book title is required'}), 400
-    
+
     try:
-        recommendations = recommender.get_recommendations(book_title, top_n=num_recommendations)
+        # Dynamically preprocess the dataset and initialize the recommender
+        books_df = preprocess_data(load_dataset(), sample_size=10000, query_books=[book_title])
+        dynamic_recommender = ContentBasedRecommender(books_df, max_features=3000)
+        dynamic_recommender.fit()
+
+        # Get recommendations
+        recommendations = dynamic_recommender.get_recommendations(book_title, top_n=num_recommendations)
         return jsonify({'recommendations': recommendations})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
