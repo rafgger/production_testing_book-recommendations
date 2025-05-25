@@ -31,6 +31,23 @@ def home():
 def serve_static(path):
     return send_from_directory('static', path)
 
+@app.route('/book-titles', methods=['GET'])
+def book_titles():
+    """Endpoint to get all available book titles for the dropdown"""
+    try:
+        if 'Book-Title' not in books_df.columns:
+            return jsonify({'error': 'Book-Title column not found in dataset'}), 400
+        
+        titles = books_df['Book-Title'].dropna().unique().tolist()
+        if not titles:
+            return jsonify({'error': 'No book titles found in dataset'}), 404
+            
+        return jsonify({'titles': sorted(titles)})
+    except Exception as e:
+        print(f"Error in /book-titles endpoint: {str(e)}")
+        return jsonify({'error': 'Internal server error'}), 500
+
+
 @app.route('/api/recommend', methods=['POST'])
 def recommend():
     data = request.json
