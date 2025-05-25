@@ -148,6 +148,22 @@ input[type="text"]:focus, select:focus {
     box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
 }
 
+/* Restore rounded styling for input field */
+input[list] {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+input[list]:focus {
+    outline: none;
+    border-color: #1e3a8a;
+    box-shadow: 0 0 5px rgba(30, 58, 138, 0.5);
+}
+
 .slider-container {
     display: flex;
     align-items: center;
