@@ -40,18 +40,21 @@ async function getRecommendations() {
 function displayRecommendations(recommendations) {
     const container = document.getElementById('recommendations-list');
     container.innerHTML = '';
-    
-    if (!recommendations || recommendations.length === 0) {
+
+    // Filter out books with no similarity
+    const filteredRecommendations = recommendations.filter(book => book.similarity_score > 0);
+
+    if (!filteredRecommendations || filteredRecommendations.length === 0) {
         container.innerHTML = '<div class="no-results">No recommendations found</div>';
         return;
     }
-    
-    recommendations.forEach((book, index) => {
+
+    filteredRecommendations.forEach((book, index) => {
         const bookCard = document.createElement('div');
         bookCard.className = 'book-card';
-        
+
         const imageUrl = book.image_url || 'https://via.placeholder.com/150x200?text=No+Image';
-        
+
         bookCard.innerHTML = `
             <div class="book-image">
                 <img src="${imageUrl}" alt="${book.title}">
@@ -70,7 +73,7 @@ function displayRecommendations(recommendations) {
 
 async function loadBookTitles() {
     const datalist = document.getElementById('book-titles');
-    datalist.innerHTML = '<option value="Loading book titles...">';
+    datalist.innerHTML = ''; // Clear any placeholder or existing options
 
     try {
         const response = await fetch('/book-titles');
@@ -88,11 +91,38 @@ async function loadBookTitles() {
             throw new Error('No books found in the database');
         }
 
-        datalist.innerHTML = '';
+        const prioritizedTitles = [
+            'To Kill a Mockingbird',
+            'Lord of the Rings',
+            'Harry Potter and the Prisoner of Azkaban'
+        ];
+
+        const uniqueTitles = new Set();
+
+        // Add prioritized titles first
+        prioritizedTitles.forEach(title => {
+            if (!uniqueTitles.has(title)) {
+                uniqueTitles.add(title);
+                const option = document.createElement('option');
+                option.value = title;
+                datalist.appendChild(option);
+            }
+        });
+
+        // Add a horizontal line (visual separation)
+        const separator = document.createElement('option');
+        separator.disabled = true;
+        separator.value = '──────────';
+        datalist.appendChild(separator);
+
+        // Add the rest of the titles
         data.titles.forEach(title => {
-            const option = document.createElement('option');
-            option.value = title;
-            datalist.appendChild(option);
+            if (!uniqueTitles.has(title)) {
+                uniqueTitles.add(title);
+                const option = document.createElement('option');
+                option.value = title;
+                datalist.appendChild(option);
+            }
         });
     } catch (error) {
         console.error('Error loading book titles:', error);
