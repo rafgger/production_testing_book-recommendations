@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Book Recommendation System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Book Recommendation System</h1>
+        <div class="search-box">
+            <input type="text" id="bookTitle" placeholder="Enter a book title" value="Lord of the Rings">
+            <input type="number" id="numRecommendations" value="5" min="1" max="20">
+            <button onclick="getRecommendations()">Get Recommendations</button>
+        </div>
+        <div id="recommendations"></div>
+    </div>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
