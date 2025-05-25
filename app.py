@@ -14,14 +14,8 @@ recommender = ContentBasedRecommender(books_df, max_features=3000)
 recommender.fit()
 print("Recommendation system initialized!")
 
-# @app.route('/')
-# def home():
-#     return 'Hello, World!'
-
-# @app.route('/')
-# def index():
-#     """Serve the main page"""
-#     return send_from_directory('static', 'index.html')
+# Cache for book titles
+cached_titles = None
 
 @app.route('/')
 def home():
@@ -34,15 +28,16 @@ def serve_static(path):
 @app.route('/book-titles', methods=['GET'])
 def book_titles():
     """Endpoint to get all available book titles for the dropdown"""
+    global cached_titles
     try:
-        if 'Book-Title' not in books_df.columns:
-            return jsonify({'error': 'Book-Title column not found in dataset'}), 400
-        
-        titles = books_df['Book-Title'].dropna().unique().tolist()
-        if not titles:
-            return jsonify({'error': 'No book titles found in dataset'}), 404
-            
-        return jsonify({'titles': sorted(titles)})
+        if cached_titles is None:
+            if 'Book-Title' not in books_df.columns:
+                return jsonify({'error': 'Book-Title column not found in dataset'}), 400
+
+            titles = books_df['Book-Title'].dropna().unique().tolist()
+            cached_titles = sorted(titles)[:1000]  # Limit to 1000 titles for performance
+
+        return jsonify({'titles': cached_titles})
     except Exception as e:
         print(f"Error in /book-titles endpoint: {str(e)}")
         return jsonify({'error': 'Internal server error'}), 500
