@@ -136,6 +136,7 @@ class ContentBasedRecommender:
                     'title': book['Book-Title'],
                     'author': book['Book-Author'],
                     'year': book['Year-Of-Publication'],
+                    'image_url': book.get('Image-URL-M', '/static/images/placeholder.png'),
                     'similarity_score': 0.0,
                     'note': 'Fallback recommendation (query not found)'
                 }
@@ -197,6 +198,7 @@ class ContentBasedRecommender:
                         'title': book['Book-Title'],
                         'author': book['Book-Author'],
                         'year': book['Year-Of-Publication'],
+                        'image_url': book.get('Image-URL-M', '/static/images/placeholder.png'),
                         'similarity_score': 0.0,
                         'note': 'Fallback recommendation (no similar books found)'
                     }
@@ -205,15 +207,17 @@ class ContentBasedRecommender:
         
         # Return recommended books with similarity scores
         recommendations = []
-        for idx, sim_score in top_similarities:
+        for idx, sim in top_similarities:
+            book = self.books_df.iloc[idx]
             book_info = {
-                'title': self.books_df.iloc[idx]['Book-Title'],
-                'author': self.books_df.iloc[idx]['Book-Author'],
-                'year': self.books_df.iloc[idx]['Year-Of-Publication'],
-                'similarity_score': sim_score
+                'title': book['Book-Title'],
+                'author': book['Book-Author'],
+                'year': book['Year-Of-Publication'],
+                'image_url': book.get('Image-URL-M', '/static/images/placeholder.png'),
+                'similarity_score': sim
             }
             recommendations.append(book_info)
-            
+
         return recommendations
 
 # Function to try different query books
